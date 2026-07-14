@@ -1,0 +1,145 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  # The template is a real Go module, so it is built and tested like one. This
+  # job is the reason the template cannot silently rot: the moment it stops
+  # compiling, the build goes red, and nobody discovers it by generating a
+  # broken project three weeks later.
+  template:
+    name: Template builds and tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.25"
+          cache: true
+
+      - name: Install GTK4 and libadwaita
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential pkg-config \
+            libgtk-4-dev libadwaita-1-dev \
+            libgirepository1.0-dev libglib2.0-dev-bin
+
+      - name: Build
+        working-directory: template
+        run: go build ./...
+
+      - name: Test
+        working-directory: template
+        run: go test ./internal/...
+
+      - name: Vet
+        working-directory: template
+        run: go vet ./...
+
+      - name: Check module boundaries
+        working-directory: template
+        run: go run ./tools/archlint
+
+      - name: Check formatting
+        working-directory: template
+        run: |
+          unformatted=$(gofmt -l cmd internal tools)
+          if [ -n "$unformatted" ]; then
+            echo "these files are not gofmt'd:"
+            echo "$unformatted"
+            exit 1
+          fi
+
+  # The scaffolding tests generate real projects from the real template, so a
+  # change that breaks generation fails here rather than in a user's terminal.
+  scaffold:
+    name: Scaffolding
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.25"
+          cache: true
+
+      - name: Install GTK4 and libadwaita
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential pkg-config \
+            libgtk-4-dev libadwaita-1-dev \
+            libgirepository1.0-dev libglib2.0-dev-bin
+
+      - name: Test
+        run: go test ./internal/...
+
+      - name: Vet
+        run: go vet ./...
+
+  # The claim on the tin is that one command produces a project that builds and
+  # runs. This job is what keeps that claim honest: it generates a project from
+  # scratch and then builds, tests and lints the result.
+  end-to-end:
+    name: Generated project builds
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        # Both ends of the module selection. Dropping notes also drops the
+        # dashboard, which depends on it, and the generator has to rewrite
+        # main.go accordingly or the result will not compile.
+        include:
+          - name: Full
+            flags: ""
+          - name: Minimal
+            flags: "--no-notes --no-dashboard"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.25"
+          cache: true
+
+      - name: Install GTK4 and libadwaita
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential pkg-config \
+            libgtk-4-dev libadwaita-1-dev \
+            libgirepository1.0-dev libglib2.0-dev-bin
+
+      - name: Generate a project
+        run: |
+          go run ./cmd/setup --batch \
+            --name "Sound Recorder" \
+            --app-id org.gnome.SoundRecorder \
+            --module github.com/gnome/soundrecorder \
+            --author "Ada Lovelace" \
+            --dir "$RUNNER_TEMP/generated" \
+            ${{ matrix.flags }}
+
+      - name: Build, test and lint what came out
+        working-directory: ${{ runner.temp }}/generated
+        run: |
+          make build
+          make test
+          make lint
+
+  shellcheck:
+    name: setup.sh
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: ShellCheck
+        run: shellcheck setup.sh

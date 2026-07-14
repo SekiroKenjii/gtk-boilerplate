@@ -1,0 +1,69 @@
+# Flatpak manifest.
+#
+# Build and install locally:
+#   make flatpak
+#
+# It needs the GNOME runtime and the Go SDK extension:
+#   flatpak install flathub org.gnome.Platform//48 org.gnome.Sdk//48
+#   flatpak install flathub org.freedesktop.Sdk.Extension.golang//24.08
+
+app-id: com.example.GtkApp
+runtime: org.gnome.Platform
+runtime-version: "48"
+sdk: org.gnome.Sdk
+
+# GTK4 and libadwaita are part of the GNOME runtime, so nothing has to be
+# vendored for them. Go is not, hence the SDK extension.
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.golang
+
+command: gtkapp
+
+finish-args:
+  # Wayland first, X11 as the fallback. Both are listed because the app should
+  # run on a session that has not moved to Wayland yet.
+  - --socket=wayland
+  - --socket=fallback-x11
+  - --share=ipc
+
+  # GPU access, for GTK's renderer.
+  - --device=dri
+
+  # The app writes its database and config under XDG_DATA_HOME and
+  # XDG_CONFIG_HOME, which the Flatpak runtime redirects into the sandbox. That
+  # is the whole storage story: no host filesystem access is requested, and none
+  # is needed.
+  #
+  # Every permission you add here is one the user has to trust. Add none you
+  # cannot justify, and if you find yourself reaching for --filesystem=home,
+  # use a portal instead.
+
+build-options:
+  append-path: /usr/lib/sdk/golang/bin
+  env:
+    GOFLAGS: "-mod=vendor"
+
+modules:
+  - name: gtkapp
+    buildsystem: simple
+
+    build-commands:
+      - go build -mod=vendor -ldflags "-X github.com/example/gtkapp/internal/app.Version=$FLATPAK_BUILD_VERSION" -o gtkapp ./cmd/app
+      - install -Dm755 gtkapp /app/bin/gtkapp
+      - install -Dm644 build/desktop/com.example.GtkApp.desktop /app/share/applications/com.example.GtkApp.desktop
+      - install -Dm644 build/desktop/com.example.GtkApp.metainfo.xml /app/share/metainfo/com.example.GtkApp.metainfo.xml
+      - install -Dm644 assets/com.example.GtkApp.svg /app/share/icons/hicolor/scalable/apps/com.example.GtkApp.svg
+
+    sources:
+      - type: dir
+        path: ../..
+
+# A note on `-mod=vendor`.
+#
+# Flatpak builds have no network, on purpose: a build that cannot reach the
+# internet is a build that cannot change under you. Go therefore has to find its
+# dependencies on disk, which means vendoring them before you package:
+#
+#   go mod vendor
+#
+# Commit the vendor/ directory, or generate it in CI before the Flatpak step.

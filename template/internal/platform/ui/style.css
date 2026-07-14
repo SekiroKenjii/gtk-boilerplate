@@ -1,0 +1,37 @@
+/*
+ * Application stylesheet.
+ *
+ * Keep this thin. libadwaita already gives you a coherent light and dark theme
+ * that follows the user's system preference, and every colour you hard-code here
+ * is one that stops following it. Prefer the named colours below over literal
+ * hex values: libadwaita defines them and re-defines them per theme.
+ *
+ *   @view_bg_color, @view_fg_color        content backgrounds
+ *   @window_bg_color, @window_fg_color    window chrome
+ *   @accent_bg_color, @accent_fg_color    the user's accent colour
+ *   @card_bg_color                        raised surfaces
+ *   @error_bg_color, @warning_bg_color    status colours
+ *
+ * Full list: https://gnome.pages.gitlab.gnome.org/libadwaita/doc/main/named-colors.html
+ */
+
+/* The empty state shown before a module has anything to display. */
+.app-empty-state {
+  color: alpha(@window_fg_color, 0.55);
+}
+
+/* A monospace block for IDs, paths and other things worth copying exactly. */
+.app-mono {
+  font-family: monospace;
+  font-size: 0.9em;
+}
+
+/* Sidebar rows carrying a count. */
+.app-badge {
+  background-color: alpha(@accent_bg_color, 0.15);
+  color: @accent_color;
+  border-radius: 9999px;
+  padding: 1px 8px;
+  font-size: 0.8em;
+  font-weight: bold;
+}

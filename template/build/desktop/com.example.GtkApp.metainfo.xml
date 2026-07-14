@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  AppStream metadata. This is what a software centre (GNOME Software, KDE
+  Discover, Flathub) reads to describe the application: its name, screenshots,
+  release history, and what permissions it wants.
+
+  Validate it before shipping:  appstreamcli validate <this file>
+
+  Flathub rejects submissions whose metadata does not validate, so treat a
+  failure here as a build failure rather than a warning.
+-->
+<component type="desktop-application">
+  <id>com.example.GtkApp</id>
+
+  <name>GtkApp</name>
+  <summary>A modular monolith desktop application</summary>
+
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>MIT</project_license>
+
+  <developer id="com.example">
+    <name>Your Name</name>
+  </developer>
+
+  <description>
+    <p>
+      GtkApp is a starting point for Linux desktop applications written in Go,
+      with a GTK4 and libadwaita interface.
+    </p>
+    <p>
+      It is organised as a modular monolith: one binary, and inside it a set of
+      modules that talk to each other only through published contracts.
+    </p>
+  </description>
+
+  <launchable type="desktop-id">com.example.GtkApp.desktop</launchable>
+
+  <!--
+    Screenshots are required by Flathub and shown in every software centre.
+    Replace the URL with a real one before publishing; a broken image is worse
+    than none.
+  -->
+  <screenshots>
+    <screenshot type="default">
+      <image>https://example.com/screenshots/main.png</image>
+      <caption>The main window</caption>
+    </screenshot>
+  </screenshots>
+
+  <url type="homepage">https://example.com</url>
+  <url type="bugtracker">https://example.com/issues</url>
+  <url type="vcs-browser">https://example.com/source</url>
+
+  <!--
+    Declares that the app adapts to small screens. libadwaita's breakpoint in
+    internal/app/shell does the actual work; this is how the store finds out.
+  -->
+  <recommends>
+    <control>keyboard</control>
+    <control>pointing</control>
+    <control>touch</control>
+  </recommends>
+
+  <requires>
+    <display_length compare="ge">360</display_length>
+  </requires>
+
+  <content_rating type="oars-1.1" />
+
+  <releases>
+    <release version="0.1.0" date="2026-01-01">
+      <description>
+        <p>First release.</p>
+      </description>
+    </release>
+  </releases>
+</component>

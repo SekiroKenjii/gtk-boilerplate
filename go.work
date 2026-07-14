@@ -1,0 +1,10 @@
+go 1.25.0
+
+// The boilerplate tooling and the project template are separate modules: the
+// template has to be a module of its own so it compiles and tests as the real
+// thing, and the tooling must not drag the app's dependencies into its own
+// go.mod. This workspace is what makes an editor understand both at once.
+use (
+	.
+	./template
+)

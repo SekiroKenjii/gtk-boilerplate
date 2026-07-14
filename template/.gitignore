@@ -1,0 +1,10 @@
+# Build output
+/bin/
+/build/flatpak-build/
+/.flatpak-builder/
+coverage.out
+
+# Vendored dependencies are only needed for the Flatpak build, which has no
+# network. Generate them with `go mod vendor` at package time rather than
+# carrying ~200MB of gotk4 in the repository.
+/vendor/

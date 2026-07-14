@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.25"
+          cache: true
+
+      # gotk4 binds GTK through cgo, so the headers have to be here before
+      # anything compiles. gobject-introspection is easy to forget, and the error
+      # it produces (a pkg-config failure deep inside a dependency) tells you
+      # nothing about what is actually missing.
+      - name: Install GTK4 and libadwaita
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential pkg-config \
+            libgtk-4-dev libadwaita-1-dev \
+            libgirepository1.0-dev libglib2.0-dev-bin
+
+      - name: Build
+        run: make build
+
+      # These need no display: the domain, service and platform layers import no
+      # GTK, which is what makes them testable on a headless runner.
+      - name: Test
+        run: make test
+
+      - name: Lint
+        run: make lint
+
+  # The architecture check gets its own job so a broken boundary is obvious at a
+  # glance in the checks list, rather than buried in a lint log.
+  architecture:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.25"
+          cache: true
+
+      - name: Check module boundaries
+        run: go run ./tools/archlint

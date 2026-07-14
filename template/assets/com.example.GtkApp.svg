@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Application icon.
+
+  This is a placeholder, and it is meant to be replaced. It exists so the app has
+  something coherent in the launcher on day one instead of a generic grey square,
+  and so you can see straight away whether icon installation worked.
+
+  It follows the parts of the GNOME icon guidelines that a generic mark can
+  follow: a 128x128 canvas, a 16px margin the artwork never crosses, one bold
+  silhouette, and no fine detail that would dissolve at 32px. What it cannot do
+  is mean anything. That part is yours.
+
+  https://developer.gnome.org/hig/guidelines/app-icons.html
+-->
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="plate" x1="64" y1="16" x2="64" y2="112" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#62a0ea"/>
+      <stop offset="1" stop-color="#1a5fb4"/>
+    </linearGradient>
+  </defs>
+
+  <!-- The plate. 16px margin on every side, 24px corner radius. -->
+  <rect x="16" y="16" width="96" height="96" rx="24" fill="url(#plate)"/>
+
+  <!--
+    A window: the one thing every app in this boilerplate has. The bar across
+    the top reads as a header bar at 128px and as a solid block at 32px, which
+    is exactly what a small icon needs it to do.
+  -->
+  <g opacity="0.28">
+    <rect x="34" y="38" width="60" height="48" rx="8" fill="#ffffff"/>
+    <rect x="34" y="38" width="60" height="13" rx="6.5" fill="#000000" opacity="0.35"/>
+  </g>
+
+  <!--
+    The application's initial. The scaffolding tool rewrites the letter below.
+  -->
+  <text x="64" y="68"
+        font-family="Cantarell, Adwaita Sans, Inter, sans-serif"
+        font-size="40"
+        font-weight="700"
+        fill="#ffffff"
+        text-anchor="middle"
+        dominant-baseline="central">G</text>
+</svg>

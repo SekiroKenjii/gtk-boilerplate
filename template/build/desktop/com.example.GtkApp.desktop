@@ -1,0 +1,15 @@
+[Desktop Entry]
+Type=Application
+Name=GtkApp
+GenericName=Modular Desktop Application
+Comment=A modular monolith desktop application built with Go, GTK4 and libadwaita
+Exec=gtkapp
+Icon=com.example.GtkApp
+Terminal=false
+Categories=Utility;GTK;
+Keywords=notes;productivity;
+StartupNotify=true
+
+# GTK matches a window to this desktop entry through the application ID. Get it
+# wrong and the window shows up in the dock as a generic, unnamed one.
+StartupWMClass=com.example.GtkApp

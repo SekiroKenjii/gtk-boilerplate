@@ -1,0 +1,6 @@
+# Build output
+/bin/
+
+# The wizard writes generated projects wherever the user points it. If that
+# happens to be inside this repository, do not commit it.
+/generated/
