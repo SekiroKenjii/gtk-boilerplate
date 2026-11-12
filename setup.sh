@@ -248,7 +248,7 @@ main() {
         esac
     done
 
-    printf '%sGTK4 + Go boilerplate%s\n\n' "$BOLD" "$RESET"
+    printf '%sJoinery: GTK4 + Go project starter%s\n\n' "$BOLD" "$RESET"
 
     if $check_only; then
         step "Checking dependencies"

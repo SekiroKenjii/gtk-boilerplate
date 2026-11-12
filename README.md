@@ -1,4 +1,4 @@
-# GTK Boilerplate
+# Joinery
 
 A starting point for Linux desktop applications written in Go, with a GTK4 and
 libadwaita interface, arranged as a modular monolith.
