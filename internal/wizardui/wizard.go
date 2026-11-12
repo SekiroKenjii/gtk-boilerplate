@@ -74,7 +74,7 @@ func Run(opts Options) int {
 	w.derived.binary = true
 	w.derived.module = true
 
-	w.app = adw.NewApplication("dev.boilerplate.Setup", gio.ApplicationFlagsNone)
+	w.app = adw.NewApplication("io.github.SekiroKenjii.Joinery", gio.ApplicationFlagsNone)
 	w.app.ConnectActivate(func() {
 		if w.win != nil {
 			w.win.Present()
@@ -89,7 +89,7 @@ func Run(opts Options) int {
 
 func (w *wizard) build() {
 	w.win = adw.NewApplicationWindow(&w.app.Application)
-	w.win.SetTitle("New GTK Project")
+	w.win.SetTitle("Joinery")
 	w.win.SetDefaultSize(680, 820)
 
 	w.nav = adw.NewNavigationView()
@@ -238,7 +238,7 @@ func (w *wizard) formPage() gtk.Widgetter {
 	w.create.ConnectClicked(w.onCreate)
 
 	header := adw.NewHeaderBar()
-	header.SetTitleWidget(adw.NewWindowTitle("New GTK Project", "Go · GTK4 · libadwaita"))
+	header.SetTitleWidget(adw.NewWindowTitle("Joinery", "Go · GTK4 · libadwaita"))
 	header.PackEnd(w.create)
 
 	scroll := gtk.NewScrolledWindow()

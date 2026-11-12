@@ -32,7 +32,7 @@ set -euo pipefail
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 OUT="${1:-$REPO_DIR/docs/images/wizard.png}"
 
-TITLE="New GTK Project"
+TITLE="Joinery"
 
 # Values that make the picture readable without putting the machine it was taken
 # on into a public README. They go in through the same flags a user would use, so
